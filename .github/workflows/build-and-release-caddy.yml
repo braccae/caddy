@@ -45,14 +45,23 @@ jobs:
       - name: Install cross-compilers
         run: |
           sudo apt-get update
-          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu
-          sudo apt-get install -y gcc-riscv64-linux-musl || echo 'riscv64-linux-musl-gcc not available'
+          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu curl xz-utils
+          # Download and extract riscv64-linux-musl toolchain from musl.cc if needed
+          if [ ! -x /opt/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc ]; then
+            curl -LO https://musl.cc/riscv64-linux-musl-cross.tgz
+            sudo mkdir -p /opt
+            sudo tar -C /opt -xzf riscv64-linux-musl-cross.tgz
+            rm riscv64-linux-musl-cross.tgz
+          fi
       - name: Build
         working-directory: src
+        env:
+          MUSL_PATH: /opt/riscv64-linux-musl-cross/bin
         run: |
           mkdir -p ../build
           if [ "${{ matrix.goarch }}" = "riscv64" ]; then
             if [ "${{ matrix.libc }}" = "musl" ]; then
+              export PATH="$MUSL_PATH:$PATH"
               export CC=riscv64-linux-musl-gcc
               export CGO_ENABLED=1
               OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-musl
@@ -99,14 +108,23 @@ jobs:
       - name: Install cross-compilers
         run: |
           sudo apt-get update
-          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu
-          sudo apt-get install -y gcc-riscv64-linux-musl || echo 'riscv64-linux-musl-gcc not available'
+          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu curl xz-utils
+          # Download and extract riscv64-linux-musl toolchain from musl.cc if needed
+          if [ ! -x /opt/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc ]; then
+            curl -LO https://musl.cc/riscv64-linux-musl-cross.tgz
+            sudo mkdir -p /opt
+            sudo tar -C /opt -xzf riscv64-linux-musl-cross.tgz
+            rm riscv64-linux-musl-cross.tgz
+          fi
       - name: Build
         working-directory: src
+        env:
+          MUSL_PATH: /opt/riscv64-linux-musl-cross/bin
         run: |
           mkdir -p ../build
           if [ "${{ matrix.goarch }}" = "riscv64" ]; then
             if [ "${{ matrix.libc }}" = "musl" ]; then
+              export PATH="$MUSL_PATH:$PATH"
               export CC=riscv64-linux-musl-gcc
               export CGO_ENABLED=1
               OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-musl
