@@ -27,9 +27,11 @@ jobs:
           - goos: windows
             libc: musl
           - goos: windows
-          - goos: darwin
-          - goos: linux
             goarch: riscv64
+          - goos: darwin
+            goarch: riscv64
+          # - goos: linux
+          #   goarch: riscv64
           - goos: linux
             goarch: riscv64
             libc: glibc
@@ -63,7 +65,7 @@ jobs:
           path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
 
   build-other:
-    name: Build Caddy (other archs)
+    name: Build Caddy (x86_64)
     runs-on: ubuntu-latest
     strategy:
       matrix:
