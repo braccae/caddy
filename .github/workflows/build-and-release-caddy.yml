@@ -13,29 +13,68 @@ permissions:
   packages: write
 
 jobs:
-  build:
-    name: Build Caddy
+  build-arm64:
+    name: Build Caddy (arm64)
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [arm64, riscv64]
+        libc: [glibc, musl]
+        exclude:
+          - goos: darwin
+            libc: musl
+          - goos: windows
+            libc: musl
+          - goos: windows
+          - goos: darwin
+          - goos: linux
+            goarch: riscv64
+          - goos: linux
+            goarch: riscv64
+            libc: glibc
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'src/go.mod'
+      - run: go version
+      - name: Install musl-tools (for musl-gcc)
+        if: matrix.libc == 'musl' && matrix.goos == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Build
+        working-directory: src
+        run: |
+          mkdir -p ../build
+          if [ "${{ matrix.libc }}" = "musl" ]; then
+            export CC=musl-gcc
+            export CGO_ENABLED=1
+            OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
+          else
+            export CGO_ENABLED=0
+            OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-glibc
+          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$OUTNAME" .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
+          path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
+
+  build-other:
+    name: Build Caddy (other archs)
     runs-on: ubuntu-latest
     strategy:
       matrix:
         goos: [linux, windows, darwin]
-        goarch: [amd64, arm64, riscv64]
+        goarch: [amd64]
         libc: [glibc, musl]
         exclude:
           - goos: darwin
-            goarch: arm64
-          - goos: darwin
             libc: musl
           - goos: windows
             libc: musl
-          - goos: windows
-            goarch: arm64
-          - goos: windows
-            goarch: riscv64
-          - goos: darwin
-            goarch: riscv64
-          - goos: linux
-            goarch: riscv64 # Disable riscv64 for now
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
@@ -66,7 +105,7 @@ jobs:
           path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
   release:
     name: Release
-    needs: build
+    needs: [build-arm64, build-other]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
