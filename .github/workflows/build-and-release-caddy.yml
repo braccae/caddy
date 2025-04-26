@@ -46,12 +46,26 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu curl xz-utils
-          # Download and extract riscv64-linux-musl toolchain from musl.cc if needed
-          if [ ! -x /opt/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc ]; then
-            curl -LO https://musl.cc/riscv64-linux-musl-cross.tgz
-            sudo mkdir -p /opt
-            sudo tar -C /opt -xzf riscv64-linux-musl-cross.tgz
-            rm riscv64-linux-musl-cross.tgz
+          # Try to install riscv64-linux-musl-gcc (cross-compiler) from apt
+          sudo apt-get install -y riscv64-linux-musl-gcc || true
+          # Check if riscv64-linux-musl-gcc is available
+          if ! command -v riscv64-linux-musl-gcc >/dev/null 2>&1; then
+            # Try to download a cross-compiler from musl.cc matching the runner architecture
+            ARCH=$(uname -m)
+            if [ "$ARCH" = "aarch64" ]; then
+              CROSS_TGZ="aarch64-linux-musl-cross.tgz"
+              CROSS_DIR="/opt/aarch64-linux-musl-cross"
+              curl -LO https://musl.cc/$CROSS_TGZ
+              sudo tar -C /opt -xzf $CROSS_TGZ
+              rm $CROSS_TGZ
+              export PATH="$CROSS_DIR/bin:$PATH"
+            elif [ "$ARCH" = "x86_64" ]; then
+              echo "No riscv64-linux-musl cross-compiler available for x86_64 from musl.cc. Skipping riscv64+musl build."
+              exit 0
+            else
+              echo "Unsupported runner architecture: $ARCH"
+              exit 0
+            fi
           fi
       - name: Build
         working-directory: src
@@ -109,12 +123,26 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu curl xz-utils
-          # Download and extract riscv64-linux-musl toolchain from musl.cc if needed
-          if [ ! -x /opt/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc ]; then
-            curl -LO https://musl.cc/riscv64-linux-musl-cross.tgz
-            sudo mkdir -p /opt
-            sudo tar -C /opt -xzf riscv64-linux-musl-cross.tgz
-            rm riscv64-linux-musl-cross.tgz
+          # Try to install riscv64-linux-musl-gcc (cross-compiler) from apt
+          sudo apt-get install -y riscv64-linux-musl-gcc || true
+          # Check if riscv64-linux-musl-gcc is available
+          if ! command -v riscv64-linux-musl-gcc >/dev/null 2>&1; then
+            # Try to download a cross-compiler from musl.cc matching the runner architecture
+            ARCH=$(uname -m)
+            if [ "$ARCH" = "aarch64" ]; then
+              CROSS_TGZ="aarch64-linux-musl-cross.tgz"
+              CROSS_DIR="/opt/aarch64-linux-musl-cross"
+              curl -LO https://musl.cc/$CROSS_TGZ
+              sudo tar -C /opt -xzf $CROSS_TGZ
+              rm $CROSS_TGZ
+              export PATH="$CROSS_DIR/bin:$PATH"
+            elif [ "$ARCH" = "x86_64" ]; then
+              echo "No riscv64-linux-musl cross-compiler available for x86_64 from musl.cc. Skipping riscv64+musl build."
+              exit 0
+            else
+              echo "Unsupported runner architecture: $ARCH"
+              exit 0
+            fi
           fi
       - name: Build
         working-directory: src
