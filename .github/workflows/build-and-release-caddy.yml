@@ -35,8 +35,7 @@ jobs:
           - goos: darwin
             goarch: riscv64
           - goos: linux
-            goarch: riscv64
-            libc: glibc  # riscv64 only with musl for now
+            goarch: riscv64 # Disable riscv64 for now
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
