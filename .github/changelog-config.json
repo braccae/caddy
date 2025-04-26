@@ -1,0 +1,9 @@
+{
+  "template": "# Changelog\n{{CHANGELOG}}",
+  "categories": [
+    { "title": "Breaking Changes", "labels": ["breaking"] },
+    { "title": "Features", "labels": ["feature"] },
+    { "title": "Bug Fixes", "labels": ["fix", "bug"] },
+    { "title": "Other Changes", "labels": ["*"], "exclude_labels": ["skip-changelog"] }
+  ]
+}

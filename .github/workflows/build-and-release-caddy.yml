@@ -1,0 +1,95 @@
+name: Build and release Caddy
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    name: Build Caddy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [linux, windows, darwin]
+        goarch: [amd64, arm64, riscv64]
+        libc: [glibc, musl]
+        exclude:
+          - goos: darwin
+            goarch: arm64
+          - goos: darwin
+            libc: musl
+          - goos: windows
+            libc: musl
+          - goos: windows
+            goarch: arm64
+          - goos: windows
+            goarch: riscv64
+          - goos: darwin
+            goarch: riscv64
+          - goos: linux
+            goarch: riscv64
+            libc: glibc  # riscv64 only with musl for now
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: '/src/go.mod'
+      - run: go version
+      - name: Build
+        run: |
+          mkdir -p build
+          if [ "${{ matrix.libc }}" = "musl" ]; then
+            export CC=musl-gcc
+            export CGO_ENABLED=1
+            OUTNAME=build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
+          else
+            export CGO_ENABLED=0
+            OUTNAME=build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-glibc
+          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$OUTNAME" ./src
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
+          path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.libc }}
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Generate release notes
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          configuration: '.github/changelog-config.json'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: ./artifacts/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+

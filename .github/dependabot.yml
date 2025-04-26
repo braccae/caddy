@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+    versioning-strategy: increase
+    labels: ["deps", "go"]
+    reviewers: ["braccae"]
+    # Automerge minor and patch updates
+    automerge: true
+    # Major updates require manual approval (automerge: false by default for majors)
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["deps", "github-actions"]
