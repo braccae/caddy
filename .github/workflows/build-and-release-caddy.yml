@@ -42,20 +42,24 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: '/src/go.mod'
+          go-version-file: 'src/go.mod'
       - run: go version
+      - name: Install musl-tools (for musl-gcc)
+        if: matrix.libc == 'musl' && matrix.goos == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
       - name: Build
+        working-directory: src
         run: |
-          mkdir -p build
+          mkdir -p ../build
           if [ "${{ matrix.libc }}" = "musl" ]; then
             export CC=musl-gcc
             export CGO_ENABLED=1
-            OUTNAME=build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
+            OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
           else
             export CGO_ENABLED=0
-            OUTNAME=build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-glibc
+            OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-glibc
           fi
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$OUTNAME" ./src
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -o "$OUTNAME" .
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
