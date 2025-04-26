@@ -42,14 +42,26 @@ jobs:
         with:
           go-version-file: 'src/go.mod'
       - run: go version
-      - name: Install musl-tools (for musl-gcc)
-        if: matrix.libc == 'musl' && matrix.goos == 'linux'
-        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Install cross-compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu
+          sudo apt-get install -y gcc-riscv64-linux-musl || echo 'riscv64-linux-musl-gcc not available'
       - name: Build
         working-directory: src
         run: |
           mkdir -p ../build
-          if [ "${{ matrix.libc }}" = "musl" ]; then
+          if [ "${{ matrix.goarch }}" = "riscv64" ]; then
+            if [ "${{ matrix.libc }}" = "musl" ]; then
+              export CC=riscv64-linux-musl-gcc
+              export CGO_ENABLED=1
+              OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-musl
+            else
+              export CC=riscv64-linux-gnu-gcc
+              export CGO_ENABLED=1
+              OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-glibc
+            fi
+          elif [ "${{ matrix.libc }}" = "musl" ]; then
             export CC=musl-gcc
             export CGO_ENABLED=1
             OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
@@ -84,14 +96,26 @@ jobs:
         with:
           go-version-file: 'src/go.mod'
       - run: go version
-      - name: Install musl-tools (for musl-gcc)
-        if: matrix.libc == 'musl' && matrix.goos == 'linux'
-        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Install cross-compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools gcc-riscv64-linux-gnu
+          sudo apt-get install -y gcc-riscv64-linux-musl || echo 'riscv64-linux-musl-gcc not available'
       - name: Build
         working-directory: src
         run: |
           mkdir -p ../build
-          if [ "${{ matrix.libc }}" = "musl" ]; then
+          if [ "${{ matrix.goarch }}" = "riscv64" ]; then
+            if [ "${{ matrix.libc }}" = "musl" ]; then
+              export CC=riscv64-linux-musl-gcc
+              export CGO_ENABLED=1
+              OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-musl
+            else
+              export CC=riscv64-linux-gnu-gcc
+              export CGO_ENABLED=1
+              OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64-glibc
+            fi
+          elif [ "${{ matrix.libc }}" = "musl" ]; then
             export CC=musl-gcc
             export CGO_ENABLED=1
             OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}-musl
