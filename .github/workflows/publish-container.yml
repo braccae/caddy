@@ -56,13 +56,34 @@ jobs:
           BASE=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository_owner }}/caddy/releases/latest" | jq -r .tag_name)
           echo "image_tag=$BASE" >> $GITHUB_OUTPUT
 
+      # Special handling for arm32 variants
+      - name: Prepare custom platform for ARM32 variants
+        id: prepare_platform
+        run: |
+          if [[ "${{ matrix.arch }}" == "arm32v6" ]]; then
+            echo "platform=linux/arm/v6" >> $GITHUB_OUTPUT
+          elif [[ "${{ matrix.arch }}" == "arm32v7" ]]; then
+            echo "platform=linux/arm/v7" >> $GITHUB_OUTPUT
+          else
+            echo "platform=linux/${{ matrix.arch }}" >> $GITHUB_OUTPUT
+          fi
+
+      # Special handling for ARM32 builds
+      - name: Prepare Dockerfile for ARM32 variants
+        if: contains(matrix.arch, 'arm32')
+        run: |
+          sed -i 's|FROM alpine:3.21.3|FROM alpine:3|' ./container/Dockerfile
+          echo "Using Alpine 3 base image for ${{ matrix.arch }}"
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         continue-on-error: true
         with:
           context: ./container
-          platforms: linux/${{ matrix.arch }}
+          platforms: ${{ steps.prepare_platform.outputs.platform }}
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/caddy:${{ steps.tag.outputs.image_tag }}-${{ matrix.arch }}
           build-args: |
             CADDY_VERSION=${{ steps.tag.outputs.image_tag }}
+            TARGETARCH=${{ contains(matrix.arch, 'arm32') && 'arm' || matrix.arch }}
+            TARGETVARIANT=${{ contains(matrix.arch, 'arm32v6') && 'v6' || (contains(matrix.arch, 'arm32v7') && 'v7' || '') }}
