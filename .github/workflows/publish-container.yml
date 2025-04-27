@@ -38,10 +38,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install jq
-        if: ${{ github.event_name != 'release' }}
-        run: |
-          sudo apt-get update && sudo apt-get install -y jq
+      # - name: Install jq ## on gh runners this isn't needed
+      #   if: ${{ github.event_name != 'release' }}
+      #   run: |
+      #     sudo apt-get update && sudo apt-get install -y jq
 
       - name: Compute image tag
         id: tag
