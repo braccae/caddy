@@ -3,8 +3,7 @@ name: Build and release Caddy
 on:
   push:
     branches: [ main ]
-    tags:
-      - 'v*.*.*'
+    
   pull_request:
   workflow_dispatch:
 
@@ -97,29 +96,65 @@ jobs:
     name: Release
     needs: [build-arm64, build-other]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prepare release version & changelog
+        id: prepare_release
+        run: |
+          set -e
+          git fetch --tags --prune --unshallow || true
+          LAST_TAG=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=0 || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            LAST_VERSION="0.0.0"
+          else
+            LAST_VERSION=${LAST_TAG#v}
+          fi
+          CADDY_MAJOR=$(grep -Eo 'github.com/caddyserver/caddy/v[0-9]+' src/go.mod | head -n1 | grep -Eo 'v[0-9]+' | tr -d 'v')
+          IFS=. read -r LAST_MAJ LAST_MIN LAST_PATCH <<< "$LAST_VERSION"
+          if [ "$CADDY_MAJOR" != "$LAST_MAJ" ]; then
+            NEW_MAJ=$CADDY_MAJOR
+            NEW_MIN=0
+            NEW_PATCH=0
+          else
+            NEW_MAJ=$LAST_MAJ
+            git diff "$LAST_TAG"..HEAD -- src/go.mod > /tmp/gomod.diff || true
+            HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
+            INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep '// indirect' || true)
+            if [ -n "$HARD_CHANGED" ]; then
+              NEW_MIN=$((LAST_MIN + 1))
+              NEW_PATCH=0
+            elif [ -n "$INDIRECT_CHANGED" ]; then
+              NEW_MIN=$LAST_MIN
+              NEW_PATCH=$((LAST_PATCH + 1))
+            else
+              NEW_MIN=$LAST_MIN
+              NEW_PATCH=$((LAST_PATCH + 1))
+            fi
+          fi
+          NEW_TAG=v${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "Computed next version: $NEW_TAG"
+          # Gather changelog
+          if [ -n "$LAST_TAG" ]; then
+            CHANGELOG=$(git log "$LAST_TAG"..HEAD --pretty=format:'- %h %s')
+          else
+            CHANGELOG=$(git log --pretty=format:'- %h %s')
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
           path: ./artifacts
 
-      - name: Generate release notes
-        id: changelog
-        uses: mikepenz/release-changelog-builder-action@v4
-        with:
-          configuration: '.github/changelog-config.json'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body: ${{ steps.changelog.outputs.changelog }}
-          files: ./artifacts/**/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.prepare_release.outputs.new_tag }}
+          name: ${{ steps.prepare_release.outputs.new_tag }}
+          body: ${{ steps.prepare_release.outputs.changelog }}
+          artifacts: ./artifacts/**/*
+          token: ${{ secrets.GITHUB_TOKEN }}
