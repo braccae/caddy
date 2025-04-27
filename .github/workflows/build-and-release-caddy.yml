@@ -140,14 +140,48 @@ jobs:
           NEW_TAG=v${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "Computed next version: $NEW_TAG"
-          # Gather changelog
+
+          # Gather Caddy changelog
           if [ -n "$LAST_TAG" ]; then
-            CHANGELOG=$(git log "$LAST_TAG"..HEAD --pretty=format:'- %h %s')
+            CADDY_CHANGELOG=$(git log "$LAST_TAG"..HEAD --pretty=format:'- %h %s')
           else
-            CHANGELOG=$(git log --pretty=format:'- %h %s')
+            CADDY_CHANGELOG=$(git log --pretty=format:'- %h %s')
           fi
+
+          # Gather dependency changelogs
+          git diff "$LAST_TAG"..HEAD -- src/go.mod > /tmp/gomod.diff || true
+          HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
+          if [ -n "$HARD_CHANGED" ]; then
+            MODULES=$(echo "$HARD_CHANGED" | sed -E 's/^[+-][[:space:]]+([[:alnum:]./+-]+) v.*/\1/' | sort -u)
+          else
+            MODULES=$(go list -m -f '{{if not .Indirect}}{{.Path}}{{end}}' all)
+          fi
+
+          DEP_CHANGELOG=""
+          for mod in $MODULES; do
+            case "$mod" in
+              github.com/*/*) repo=$(echo $mod | sed -E 's|github.com/([^/]+/[^/]+).*|\1|') ;;
+              *) continue ;;
+            esac
+            vers=$(go list -m -f '{{if eq .Path "'"$mod"'"}}{{.Version}}{{end}}' all)
+            # Try fetch changelog by tag, else latest
+            notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$repo/releases/tags/$vers" | jq -r '.body // empty') || true
+            if [ -z "$notes" ]; then
+              notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.body // empty') || true
+            fi
+            if [ -z "$notes" ]; then
+              notes="No changelog available"
+            fi
+            DEP_CHANGELOG="$DEP_CHANGELOG\n### $repo@$vers\n$notes\n"
+          done
+
+          # Compose full changelog
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "## Caddy Changelog" >> $GITHUB_OUTPUT
+          echo "$CADDY_CHANGELOG" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## Dependency Changelogs" >> $GITHUB_OUTPUT
+          echo -e "$DEP_CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Download all build artifacts
