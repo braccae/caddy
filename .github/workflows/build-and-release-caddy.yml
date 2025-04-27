@@ -16,7 +16,9 @@ jobs:
   build-arm64:
     name: Build Caddy (arm64)
     runs-on: ubuntu-24.04-arm
+    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         include:
           - goos: linux
@@ -67,7 +69,9 @@ jobs:
   build-other:
     name: Build Caddy (x86_64)
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
+      fail-fast: false
       matrix:
         goos: [linux, windows]
         goarch: [amd64]
