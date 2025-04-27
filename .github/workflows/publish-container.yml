@@ -1,8 +1,11 @@
-name: Publish Container
+name: Build and publish container
 
 on:
   release:
     types: [ published, created]
+  workflow_run:
+    workflows: ["Build and release caddy"]
+    types: [completed]
   push:
     branches: [ main ]
     paths:
