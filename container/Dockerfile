@@ -1,6 +1,8 @@
+# First declare build args so they're available globally
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
+ARG CADDY_VERSION
 
 # Use Alpine 3 for ARM32 variants and Alpine 3.21.3 for other architectures
 FROM --platform=$TARGETPLATFORM alpine:3 AS alpine-arm32
@@ -14,6 +16,11 @@ FROM alpine-default AS alpine-riscv64
 
 # Final image based on architecture
 FROM alpine-${TARGETARCH}
+
+# Re-declare the build args in the final stage to make them available
+ARG TARGETARCH
+ARG TARGETVARIANT
+ARG CADDY_VERSION
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -31,14 +38,13 @@ RUN set -eux; \
 	wget -O /usr/share/caddy/index.html "https://github.com/caddyserver/dist/raw/33ae08ff08d168572df2956ed14fbc4949880d94/welcome/index.html"
 
 # https://github.com/caddyserver/caddy/releases
-ARG CADDY_VERSION
 
 RUN set -eux; \
    # select Caddy binary based on build target
    case "${TARGETARCH}" in \
-     amd64) binArch='amd64'; ;; \
-     arm) case "${TARGETVARIANT}" in v7) binArch='armv7';; v6) binArch='armv6';; *) binArch='armv6';; esac; ;; \
-     arm64) binArch='arm64'; ;; \
+     amd64) binArch='amd64v1'; ;; \
+     arm) case "${TARGETVARIANT}" in v7) binArch='arm32v7';; v6) binArch='arm32v6';; *) binArch='arm32v6';; esac; ;; \
+     arm64) binArch='arm64v8'; ;; \
      riscv64) binArch='riscv64'; ;; \
      *) echo >&2 "error: unsupported architecture ${TARGETARCH}/${TARGETVARIANT}"; exit 1; ;; \
    esac; \
@@ -48,8 +54,8 @@ RUN set -eux; \
    caddy version
 
 # See https://caddyserver.com/docs/conventions#file-locations for details
-ENV XDG_CONFIG_HOME /config
-ENV XDG_DATA_HOME /data
+ENV XDG_CONFIG_HOME=/config
+ENV XDG_DATA_HOME=/data
 
 LABEL org.opencontainers.image.version=${CADDY_VERSION}
 LABEL org.opencontainers.image.title=Caddy
