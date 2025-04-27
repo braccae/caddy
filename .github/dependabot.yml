@@ -1,10 +1,10 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    directory: "/"
+    directory: "/src"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "daily"
+    open-pull-requests-limit: 16
     commit-message:
       prefix: "chore(deps)"
     versioning-strategy: increase
@@ -28,6 +28,12 @@ updates:
     labels:
       - "deps"
       - "github-actions"
+    automerge: true
+    automerged_updates:
+      - match:
+          update_type: "patch"
+      - match:
+          update_type: "minor"
 
   - package-ecosystem: "docker"
     directory: "/container"
@@ -39,3 +45,9 @@ updates:
     labels:
       - "deps"
       - "docker"
+    automerge: true
+    automerged_updates:
+      - match:
+          update_type: "patch"
+      - match:
+          update_type: "minor"
