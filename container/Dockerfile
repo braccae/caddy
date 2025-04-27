@@ -1,4 +1,19 @@
-FROM --platform=$TARGETPLATFORM alpine:3.21.3
+ARG TARGETPLATFORM
+ARG TARGETARCH
+ARG TARGETVARIANT
+
+# Use Alpine 3 for ARM32 variants and Alpine 3.21.3 for other architectures
+FROM --platform=$TARGETPLATFORM alpine:3 AS alpine-arm32
+FROM --platform=$TARGETPLATFORM alpine:3.21.3 AS alpine-default
+
+# Select the appropriate base image based on architecture
+FROM alpine-arm32 AS alpine-arm
+FROM alpine-default AS alpine-amd64
+FROM alpine-default AS alpine-arm64
+FROM alpine-default AS alpine-riscv64
+
+# Final image based on architecture
+FROM alpine-${TARGETARCH}
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -17,8 +32,6 @@ RUN set -eux; \
 
 # https://github.com/caddyserver/caddy/releases
 ARG CADDY_VERSION
-ARG TARGETARCH
-ARG TARGETVARIANT
 
 RUN set -eux; \
    # select Caddy binary based on build target
