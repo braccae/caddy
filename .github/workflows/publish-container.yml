@@ -52,7 +52,7 @@ jobs:
           BASE=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository_owner }}/caddy/releases/latest" | jq -r .tag_name)
           echo "image_tag=$BASE" >> $GITHUB_OUTPUT
 
-      - name: Build and push Docker image
+      - name: Build and push multi-arch Docker image
         uses: docker/build-push-action@v4
         with:
           context: ./container
@@ -61,5 +61,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/caddy:latest
             ghcr.io/${{ github.repository_owner }}/caddy:${{ steps.tag.outputs.image_tag }}
+          provenance: false
           build-args: |
             CADDY_VERSION=${{ steps.tag.outputs.image_tag }}

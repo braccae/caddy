@@ -1,16 +1,15 @@
-ARG TARGETPLATFORM
+# Define ARGs before FROM (required for Docker build system)
 ARG TARGETARCH
 ARG TARGETVARIANT
 ARG CADDY_VERSION
 
-# Simple approach: Use Alpine 3 for ARM/ARM32, 3.21.3 for others
+# Base image selection
 FROM alpine:3.21.3
 
-# Switch to Alpine 3 for ARM32 variants
-RUN if [ "${TARGETARCH}" = "arm" ]; then \
-      echo "Using Alpine 3 for ARM32 (${TARGETVARIANT})"; \
-      sed -i 's/v3.21.3/v3/g' /etc/apk/repositories; \
-    fi
+# Redefine ARGs after FROM (required)
+ARG TARGETARCH
+ARG TARGETVARIANT
+ARG CADDY_VERSION
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -27,25 +26,31 @@ RUN set -eux; \
 	wget -O /etc/caddy/Caddyfile "https://github.com/caddyserver/dist/raw/33ae08ff08d168572df2956ed14fbc4949880d94/config/Caddyfile"; \
 	wget -O /usr/share/caddy/index.html "https://github.com/caddyserver/dist/raw/33ae08ff08d168572df2956ed14fbc4949880d94/welcome/index.html"
 
-# Download the appropriate Caddy binary based on architecture
+# Switch to Alpine 3 for ARM32 variants and download the correct binary in one step
 RUN set -eux; \
+    # For ARM32, switch to Alpine 3 \
+    if [ "${TARGETARCH}" = "arm" ]; then \
+        echo "Using Alpine 3 for ARM32 variant: ${TARGETVARIANT}"; \
+        sed -i 's/v3.21.3/v3/g' /etc/apk/repositories; \
+    fi; \
+    \
+    # Determine which binary to download based on architecture \
     if [ "${TARGETARCH}" = "amd64" ]; then \
-        ARCH="amd64v1"; \
+        ARCH=amd64v1; \
     elif [ "${TARGETARCH}" = "arm64" ]; then \
-        ARCH="arm64v8"; \
+        ARCH=arm64v8; \
+    elif [ "${TARGETARCH}" = "arm" ] && [ "${TARGETVARIANT}" = "v7" ]; then \
+        ARCH=arm32v7; \
     elif [ "${TARGETARCH}" = "arm" ]; then \
-        if [ "${TARGETVARIANT}" = "v7" ]; then \
-            ARCH="arm32v7"; \
-        else \
-            ARCH="arm32v6"; \
-        fi; \
+        ARCH=arm32v6; \
     elif [ "${TARGETARCH}" = "riscv64" ]; then \
-        ARCH="riscv64"; \
+        ARCH=riscv64; \
     else \
-        echo "Unsupported architecture: ${TARGETARCH}/${TARGETVARIANT}"; \
+        echo "Unknown architecture: ${TARGETARCH}/${TARGETVARIANT}"; \
         exit 1; \
     fi; \
-    echo "Downloading Caddy for architecture: ${ARCH}"; \
+    \
+    echo "Downloading Caddy binary for ${ARCH}"; \
     wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${ARCH}"; \
     chmod +x /usr/bin/caddy; \
     setcap cap_net_bind_service=+ep /usr/bin/caddy; \
