@@ -1,15 +1,20 @@
-# Build arguments for architecture targeting
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
-
-# Simple approach: Use Alpine 3 for ARM32 variants, 3.21.3 for others
-FROM alpine:3.21.3
-
-# Immediately redefine build arguments so they're available in this build stage
-ARG TARGETARCH
-ARG TARGETVARIANT
 ARG CADDY_VERSION
+
+# Choose base image based on architecture
+FROM alpine:3 AS alpine_arm32
+FROM alpine:3.21.3 AS alpine_default
+
+# Select the appropriate base image
+FROM alpine_arm32 AS build_arm
+FROM alpine_default AS build_amd64
+FROM alpine_default AS build_arm64
+FROM alpine_default AS build_riscv64
+
+# Final image based on architecture
+FROM build_${TARGETARCH}
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -28,7 +33,6 @@ RUN set -eux; \
 
 # Download the appropriate Caddy binary based on architecture
 RUN set -eux; \
-   # Use the updated naming convention
    case "${TARGETARCH}" in \
      amd64) binArch='amd64v1'; ;; \
      arm) case "${TARGETVARIANT}" in v7) binArch='arm32v7';; v6) binArch='arm32v6';; *) binArch='arm32v6';; esac; ;; \
@@ -36,7 +40,7 @@ RUN set -eux; \
      riscv64) binArch='riscv64'; ;; \
      *) echo >&2 "error: unsupported architecture ${TARGETARCH}/${TARGETVARIANT}"; exit 1; ;; \
    esac; \
-   echo "Downloading binary for architecture: ${binArch}"; \
+   echo "Downloading binary for architecture: ${binArch} (${TARGETARCH}/${TARGETVARIANT})"; \
    wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${binArch}"; \
    chmod +x /usr/bin/caddy; \
    setcap cap_net_bind_service=+ep /usr/bin/caddy; \
