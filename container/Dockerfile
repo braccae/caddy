@@ -1,4 +1,4 @@
-FROM alpine:3.21
+FROM --platform=$TARGETPLATFORM alpine:3.19
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -24,7 +24,7 @@ RUN set -eux; \
    # select Caddy binary based on build target
    case "${TARGETARCH}" in \
      amd64) binArch='amd64'; ;; \
-     arm) case "${TARGETVARIANT}" in v7) binArch='armv7';; *) binArch='armv6';; esac; ;; \
+     arm) case "${TARGETVARIANT}" in v7) binArch='armv7';; v6) binArch='armv6';; *) binArch='armv6';; esac; ;; \
      arm64) binArch='arm64'; ;; \
      riscv64) binArch='riscv64'; ;; \
      *) echo >&2 "error: unsupported architecture ${TARGETARCH}/${TARGETVARIANT}"; exit 1; ;; \
