@@ -17,21 +17,22 @@ RUN set -eux; \
 
 # https://github.com/caddyserver/caddy/releases
 ARG CADDY_VERSION
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 RUN set -eux; \
-	apkArch="$(apk --print-arch)"; \
-	case "$apkArch" in \
-		x86_64)  binArch='amd64'; ;; \
-		armhf)   binArch='armv6'; ;; \
-		armv7)   binArch='armv7'; ;; \
-		aarch64) binArch='arm64'; ;; \
-		riscv64) binArch='riscv64'; ;; \
-		*) echo >&2 "error: unsupported architecture ($apkArch)"; exit 1 ;; \
-	esac; \
-	wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${binArch}"; \
-	chmod +x /usr/bin/caddy; \
-	setcap cap_net_bind_service=+ep /usr/bin/caddy; \
-	caddy version
+   # select Caddy binary based on build target
+   case "${TARGETARCH}" in \
+     amd64) binArch='amd64'; ;; \
+     arm) case "${TARGETVARIANT}" in v7) binArch='armv7';; *) binArch='armv6';; esac; ;; \
+     arm64) binArch='arm64'; ;; \
+     riscv64) binArch='riscv64'; ;; \
+     *) echo >&2 "error: unsupported architecture ${TARGETARCH}/${TARGETVARIANT}"; exit 1; ;; \
+   esac; \
+   wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${binArch}"; \
+   chmod +x /usr/bin/caddy; \
+   setcap cap_net_bind_service=+ep /usr/bin/caddy; \
+   caddy version
 
 # See https://caddyserver.com/docs/conventions#file-locations for details
 ENV XDG_CONFIG_HOME /config
