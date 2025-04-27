@@ -52,7 +52,7 @@ jobs:
           mkdir -p ../build
           OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}
           if [ "${{ matrix.goarch }}" = "arm" ]; then
-            OUTNAME=../build/caddy-${{ matrix.goos }}-armv${{ matrix.goarm }}
+            OUTNAME=../build/caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
             GOARM=${{ matrix.goarm }}
           fi
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -o "$OUTNAME" .
@@ -60,8 +60,8 @@ jobs:
         if: ${{ matrix.goarch == 'arm' }}
         uses: actions/upload-artifact@v4
         with:
-          name: caddy-${{ matrix.goos }}-armv${{ matrix.goarm }}
-          path: build/caddy-${{ matrix.goos }}-armv${{ matrix.goarm }}
+          name: caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
+          path: build/caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
       - name: Upload artifact (other)
         if: ${{ matrix.goarch != 'arm' }}
         uses: actions/upload-artifact@v4
