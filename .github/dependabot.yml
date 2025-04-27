@@ -3,19 +3,39 @@ updates:
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
+      interval: "weekly"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
     versioning-strategy: increase
-    labels: ["deps", "go"]
-    reviewers: ["braccae"]
-    # Automerge minor and patch updates
+    labels:
+      - "deps"
+      - "go"
+    reviewers:
+      - "braccae"
     automerge: true
-    # Major updates require manual approval (automerge: false by default for majors)
+    automerged_updates:
+      - match:
+          update_type: "patch"
+      - match:
+          update_type: "minor"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    labels: ["deps", "github-actions"]
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "github-actions"
+
+  - package-ecosystem: "docker"
+    directory: "/container"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps): docker"
+    labels:
+      - "deps"
+      - "docker"
