@@ -26,7 +26,7 @@ jobs:
             goarch: arm
             goarm: 7
         goos: [linux, windows, darwin]
-        goarch: [amd64, arm64, riscv64]
+        goarch: [arm64, riscv64]
         exclude:
           - goos: windows
             goarch: riscv64
