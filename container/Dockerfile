@@ -3,18 +3,14 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 ARG CADDY_VERSION
 
-# Choose base image based on architecture
-FROM alpine:3 AS alpine_arm32
-FROM alpine:3.21.3 AS alpine_default
+# Simple approach: Use Alpine 3 for ARM/ARM32, 3.21.3 for others
+FROM alpine:3.21.3
 
-# Select the appropriate base image
-FROM alpine_arm32 AS build_arm
-FROM alpine_default AS build_amd64
-FROM alpine_default AS build_arm64
-FROM alpine_default AS build_riscv64
-
-# Final image based on architecture
-FROM build_${TARGETARCH}
+# Switch to Alpine 3 for ARM32 variants
+RUN if [ "${TARGETARCH}" = "arm" ]; then \
+      echo "Using Alpine 3 for ARM32 (${TARGETVARIANT})"; \
+      sed -i 's/v3.21.3/v3/g' /etc/apk/repositories; \
+    fi
 
 RUN apk add --no-cache \
 	ca-certificates \
@@ -33,18 +29,27 @@ RUN set -eux; \
 
 # Download the appropriate Caddy binary based on architecture
 RUN set -eux; \
-   case "${TARGETARCH}" in \
-     amd64) binArch='amd64v1'; ;; \
-     arm) case "${TARGETVARIANT}" in v7) binArch='arm32v7';; v6) binArch='arm32v6';; *) binArch='arm32v6';; esac; ;; \
-     arm64) binArch='arm64v8'; ;; \
-     riscv64) binArch='riscv64'; ;; \
-     *) echo >&2 "error: unsupported architecture ${TARGETARCH}/${TARGETVARIANT}"; exit 1; ;; \
-   esac; \
-   echo "Downloading binary for architecture: ${binArch} (${TARGETARCH}/${TARGETVARIANT})"; \
-   wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${binArch}"; \
-   chmod +x /usr/bin/caddy; \
-   setcap cap_net_bind_service=+ep /usr/bin/caddy; \
-   caddy version
+    if [ "${TARGETARCH}" = "amd64" ]; then \
+        ARCH="amd64v1"; \
+    elif [ "${TARGETARCH}" = "arm64" ]; then \
+        ARCH="arm64v8"; \
+    elif [ "${TARGETARCH}" = "arm" ]; then \
+        if [ "${TARGETVARIANT}" = "v7" ]; then \
+            ARCH="arm32v7"; \
+        else \
+            ARCH="arm32v6"; \
+        fi; \
+    elif [ "${TARGETARCH}" = "riscv64" ]; then \
+        ARCH="riscv64"; \
+    else \
+        echo "Unsupported architecture: ${TARGETARCH}/${TARGETVARIANT}"; \
+        exit 1; \
+    fi; \
+    echo "Downloading Caddy for architecture: ${ARCH}"; \
+    wget -O /usr/bin/caddy "https://github.com/braccae/caddy/releases/download/${CADDY_VERSION}/caddy-linux-${ARCH}"; \
+    chmod +x /usr/bin/caddy; \
+    setcap cap_net_bind_service=+ep /usr/bin/caddy; \
+    caddy version
 
 # See https://caddyserver.com/docs/conventions#file-locations for details
 ENV XDG_CONFIG_HOME=/config \
