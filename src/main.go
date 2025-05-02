@@ -36,6 +36,7 @@ import (
 	// Essentials
 	_ "github.com/mholt/caddy-l4"
 	_ "github.com/greenpau/caddy-security"
+	_ "github.com/abiosoft/caddy-json-schema"
 	// Dynamic DNS
 	_ "github.com/mholt/caddy-dynamicdns"
 	_ "github.com/mholt/caddy-dynamicdns"
