@@ -4,6 +4,7 @@ go 1.24.2
 
 require (
 	github.com/WeidiDeng/caddy-cloudflare-ip v0.0.0-20231130002422-f53b62aa13cb
+	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af
 	github.com/caddy-dns/cloudflare v0.2.1
 	github.com/caddyserver/caddy/v2 v2.10.0
 	github.com/gerolf-vent/caddy-vault-storage v1.2.0
@@ -28,7 +29,6 @@ require (
 	github.com/Masterminds/semver/v3 v3.3.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.3.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
-	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af // indirect
 	github.com/alecthomas/chroma/v2 v2.15.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.1 // indirect
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b // indirect
@@ -62,7 +62,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emersion/go-sasl v0.0.0-20241020182733-b788ff22d5a6 // indirect
 	github.com/emersion/go-smtp v0.21.3 // indirect
-	github.com/expr-lang/expr v1.16.9 // indirect
+	github.com/expr-lang/expr v1.17.0 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/francoispqt/gojay v1.2.13 // indirect
