@@ -11,25 +11,29 @@ PublishPort=443:443
 Volume=caddy-data:/data
 Volume=%h/caddyfile.d/:/caddyfile.d:ro,z
 
-# dev | staging | prod
-Environment=MODE=dev
 Environment=EMAIL=
-Environment=CF_API_TOKEN=
+Secret=caddy_cf_api_token[,type=env,target=CF_API_TOKEN]
 Environment=CROWDSEC_API_URL=
+Secret=crowdsec_api_key[,type=env,target=CROWDSEC_API_KEY]
 Environment=CROWDSEC_API_KEY=
 Environment=CROWDSEC_TICKER_INTERVAL=
 Environment=CROWDSEC_APPSEC_URL=
 Environment=CROWDSEC_ENABLE_HARD_FAILS=
+
+
+# dev | staging | prod
+Environment=MODE=dev
 # # Prod
 # Environment=VAULT_ADDR=
+# Secret=vault_token[,type=file,target=/var/run/secrets/kubernetes.io/vault_token]
 # # Staging
 # Environment=S3_HOST=
 # Environment=S3_BUCKET=
-# Environment=S3_ACCESS_KEY=
-# Environment=S3_SECRET_KEY=
 # Environment=S3_PREFIX=
+# Secret=s3_access_key[,type=env,target=S3_ACCESS_KEY]
+# Secret=s3_secret_key[,type=env,target=S3_SECRET_KEY]
 # # Staging Optional
-# Environment=S3_ENCRYPTION_KEY=
+# Secret=s3_encryption_key[,type=env,target=S3_ENCRYPTION_KEY]
 
 User=proxy
 
