@@ -1,0 +1,43 @@
+[Unit]
+Description=Caddy
+After=network-online.target
+
+[Container]
+Image=ghcr.io/braccae/caddy:latest
+AutoUpdate=registry
+
+PublishPort=80:80
+PublishPort=443:443
+Volume=caddy-data:/data
+Volume=%h/caddyfile.d/:/caddyfile.d:ro,z
+
+# dev | staging | prod
+Environment=MODE=dev
+Environment=EMAIL=
+Environment=CF_API_TOKEN=
+Environment=CROWDSEC_API_URL=
+Environment=CROWDSEC_API_KEY=
+Environment=CROWDSEC_TICKER_INTERVAL=
+Environment=CROWDSEC_APPSEC_URL=
+Environment=CROWDSEC_ENABLE_HARD_FAILS=
+# # Prod
+# Environment=VAULT_ADDR=
+# # Staging
+# Environment=S3_HOST=
+# Environment=S3_BUCKET=
+# Environment=S3_ACCESS_KEY=
+# Environment=S3_SECRET_KEY=
+# Environment=S3_PREFIX=
+# # Staging Optional
+# Environment=S3_ENCRYPTION_KEY=
+
+User=proxy
+
+HealthCmd=wget -q -s --server-response http://localhost/healthz && exit 0 || exit 1
+HealthInterval=10s
+HealthTimeout=20s
+HealthRetries=3
+HealthStartPeriod=60s
+
+[Install]
+WantedBy=multi-user.target
