@@ -1,0 +1,35 @@
+{
+    email {env.EMAIL}
+	storage file_system /data
+	log {
+		level INFO
+		output file /data/logs/access.log {
+			roll_size 10MB
+			roll_keep 5
+			roll_keep_for 168h
+		}
+	}
+	servers {
+		listener_wrappers {
+			proxy_protocol {
+				timeout 5s
+			}
+			tls
+		}
+	}
+	acme_dns cloudflare {env.CF_API_TOKEN}
+
+	crowdsec {
+    api_url {env.CROWDSEC_API_URL}
+    api_key {env.CROWDSEC_API_KEY}
+    ticker_interval {env.CROWDSEC_TICKER_INTERVAL}
+    appsec_url {env.CROWDSEC_APPSEC_URL}
+    enable_hard_fails {env.CROWDSEC_ENABLE_HARD_FAILS}
+	}
+}
+
+127.0.0.1:80/healthz {
+    respond "OK" 200
+}
+
+import /caddyfile.d/*.caddyfile
