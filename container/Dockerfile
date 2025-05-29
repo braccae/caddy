@@ -82,4 +82,6 @@ COPY *.Caddyfile /etc/caddy/
 VOLUME [ "/data" ]
 VOLUME [ "/caddyfile.d" ]
 
-CMD ["caddy", "run", "--config", "/etc/caddy/$MODE.Caddyfile", "--adapter", "caddyfile"]
+CMD caddy run --config /etc/caddy/$MODE.Caddyfile --adapter caddyfile
+
+#CMD ["caddy", "run", "--config", "/etc/caddy/$MODE.Caddyfile", "--adapter", "caddyfile"]
