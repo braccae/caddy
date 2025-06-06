@@ -55,7 +55,8 @@ jobs:
       - name: Build and push multi-arch Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./container/rootless.Dockerfile
+          context: ./container/
+          file: rootless.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7,linux/riscv64
           push: true
           tags: |
