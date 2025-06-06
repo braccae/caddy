@@ -9,10 +9,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "container/**"
+      - "container/*.Caddyfile"
+      - "container/rootless.Dockerfile"
   pull_request:
     paths:
-      - "container/**"
+      - "container/*.Caddyfile"
+      - "container/rootless.Dockerfile"
 
 permissions:
   contents: read
@@ -56,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./container/
-          file: rootless.Dockerfile
+          file: container/rootless.Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7,linux/riscv64
           push: true
           tags: |
