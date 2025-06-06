@@ -62,7 +62,7 @@ ENV XDG_CONFIG_HOME=/config \
 
 LABEL org.opencontainers.image.version=${CADDY_VERSION}
 LABEL org.opencontainers.image.title=Caddy
-LABEL org.opencontainers.image.description="a powerful, enterprise-ready, open source web server with automatic HTTPS written in Go"
+LABEL org.opencontainers.image.description="a powerful, customized, enterprise-ready, open source web server with automatic HTTPS written in Go"
 LABEL org.opencontainers.image.url=https://caddyserver.com
 LABEL org.opencontainers.image.documentation=https://caddyserver.com/docs
 LABEL org.opencontainers.image.vendor="Light Code Labs"
