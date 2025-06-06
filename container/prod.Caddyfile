@@ -6,7 +6,7 @@
 	}
 	log {
 		level INFO
-		output file /data/logs/access.log {
+		output file /logs/access.log {
 			roll_size 10MB
 			roll_keep 5
 			roll_keep_for 168h

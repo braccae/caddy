@@ -9,6 +9,7 @@ AutoUpdate=registry
 PublishPort=80:80
 PublishPort=443:443
 Volume=caddy-data:/data
+Volume=caddy-logs:/logs
 Volume=%h/caddyfile.d/:/caddyfile.d:ro,z
 
 Environment=EMAIL=
