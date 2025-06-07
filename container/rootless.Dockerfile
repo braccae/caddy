@@ -80,7 +80,6 @@ ENV MODE=prod
 COPY *.Caddyfile /etc/caddy/
 
 VOLUME [ "/data" ]
-VOLUME [ "/logs" ]
 VOLUME [ "/caddyfile.d" ]
 
 USER 1000
