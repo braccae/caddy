@@ -25,11 +25,11 @@
 	acme_dns cloudflare {env.CF_API_TOKEN}
 
 	crowdsec {
-    api_url {env.CROWDSEC_API_URL}
-    api_key {env.CROWDSEC_API_KEY}
-    ticker_interval {env.CROWDSEC_TICKER_INTERVAL}
-    appsec_url {env.CROWDSEC_APPSEC_URL}
-    enable_hard_fails {env.CROWDSEC_ENABLE_HARD_FAILS}
+    api_url {$CROWDSEC_API_URL:http://localhost:8080}
+    api_key {$CROWDSEC_API_KEY}
+    ticker_interval {$CROWDSEC_TICKER_INTERVAL:15s}
+    appsec_url {$CROWDSEC_APPSEC_URL:http://localhost:6060}
+    enable_hard_fails {$CROWDSEC_ENABLE_HARD_FAILS:true}
 	}
 }
 
