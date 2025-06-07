@@ -80,6 +80,7 @@ WORKDIR /srv
 ENV MODE=prod
 COPY *.Caddyfile /etc/caddy/
 
+VOLUME [ "/config" ]
 VOLUME [ "/data" ]
 VOLUME [ "/caddyfile.d" ]
 
