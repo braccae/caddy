@@ -5,6 +5,7 @@ After=network-online.target
 [Container]
 Image=ghcr.io/braccae/caddy:latest
 AutoUpdate=registry
+LogDriver=journald
 
 PublishPort=80:80
 PublishPort=443:443

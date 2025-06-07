@@ -11,11 +11,8 @@
 	}
 	log {
 		level INFO
-		output file /logs/access.log {
-			roll_size 10MB
-			roll_keep 5
-			roll_keep_for 168h
-		}
+		output stdout
+		format json
 	}
 	servers {
 		listener_wrappers {
