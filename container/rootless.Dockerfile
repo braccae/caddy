@@ -14,7 +14,8 @@ ARG CADDY_VERSION
 RUN apk add --no-cache \
 	ca-certificates \
 	libcap \
-	mailcap
+	mailcap \
+    curl
 
 RUN set -eux; \
 	mkdir -p \
