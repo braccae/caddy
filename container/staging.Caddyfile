@@ -29,7 +29,7 @@
     api_key {$CROWDSEC_API_KEY}
     ticker_interval {$CROWDSEC_TICKER_INTERVAL}
     appsec_url {$CROWDSEC_APPSEC_URL}
-    enable_hard_fails {$CROWDSEC_ENABLE_HARD_FAILS}
+    # enable_hard_fails {$CROWDSEC_ENABLE_HARD_FAILS}
 	}
 }
 
