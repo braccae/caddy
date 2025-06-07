@@ -84,5 +84,3 @@ VOLUME [ "/caddyfile.d" ]
 
 USER 1000
 CMD caddy run --config /etc/caddy/$MODE.Caddyfile --adapter caddyfile
-
-#CMD ["caddy", "run", "--config", "/etc/caddy/$MODE.Caddyfile", "--adapter", "caddyfile"]
