@@ -142,7 +142,7 @@ jobs:
             NEW_PATCH=0
           else
             NEW_MAJ=$LAST_MAJ
-            git diff "$LAST_TAG"..HEAD -- src/go.mod > /tmp/gomod.diff || true
+            git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
             HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
             INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep '// indirect' || true)
             if [ -n "$HARD_CHANGED" ]; then
@@ -162,13 +162,13 @@ jobs:
 
           # Gather Caddy changelog
           if [ -n "$LAST_TAG" ]; then
-            CADDY_CHANGELOG=$(git log "$LAST_TAG"..HEAD --pretty=format:'- %h %s')
+            CADDY_CHANGELOG=$(git log "$LAST_TAG"...HEAD --pretty=format:'- %h %s')
           else
             CADDY_CHANGELOG=$(git log --pretty=format:'- %h %s')
           fi
 
           # Gather dependency changelogs
-          git diff "$LAST_TAG"..HEAD -- src/go.mod > /tmp/gomod.diff || true
+          git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
           HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
           if [ -n "$HARD_CHANGED" ]; then
             MODULES=$(echo "$HARD_CHANGED" | sed -E 's/^[+-][[:space:]]+([[:alnum:]./+-]+) v.*/\1/' | sort -u)
