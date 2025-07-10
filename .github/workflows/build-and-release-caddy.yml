@@ -145,12 +145,9 @@ jobs:
             git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
             HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
             INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep '// indirect' || true)
-            if [ -n "$HARD_CHANGED" ]; then
+            if [ -n "$HARD_CHANGED" ] || [ -n "$INDIRECT_CHANGED" ]; then
               NEW_MIN=$((LAST_MIN + 1))
               NEW_PATCH=0
-            elif [ -n "$INDIRECT_CHANGED" ]; then
-              NEW_MIN=$LAST_MIN
-              NEW_PATCH=$((LAST_PATCH + 1))
             else
               NEW_MIN=$LAST_MIN
               NEW_PATCH=$((LAST_PATCH + 1))
