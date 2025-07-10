@@ -13,12 +13,6 @@ updates:
       - "go"
     reviewers:
       - "braccae"
-    automerge: true
-    automerged_updates:
-      - match:
-          update_type: "patch"
-      - match:
-          update_type: "minor"
 
   - package-ecosystem: "github-actions"
     directory: ".github/workflows"
@@ -28,12 +22,6 @@ updates:
     labels:
       - "deps"
       - "github-actions"
-    automerge: true
-    automerged_updates:
-      - match:
-          update_type: "patch"
-      - match:
-          update_type: "minor"
 
   - package-ecosystem: "docker"
     directory: "container"
@@ -45,9 +33,3 @@ updates:
     labels:
       - "deps"
       - "docker"
-    automerge: true
-    automerged_updates:
-      - match:
-          update_type: "patch"
-      - match:
-          update_type: "minor"
