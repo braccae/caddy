@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "gomod"
-    directory: "/src"
+    directory: "src"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 16
@@ -24,7 +24,7 @@ updates:
       - "github-actions"
 
   - package-ecosystem: "docker"
-    directory: "/container"
+    directory: "container"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 5
