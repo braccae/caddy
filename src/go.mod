@@ -9,7 +9,7 @@ require (
 	github.com/caddyserver/caddy/v2 v2.10.0
 	github.com/gerolf-vent/caddy-vault-storage v1.2.0
 	github.com/greenpau/caddy-security v1.1.31
-	github.com/hslatman/caddy-crowdsec-bouncer v0.8.1
+	github.com/hslatman/caddy-crowdsec-bouncer v0.9.2
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250419190939-bc90ac0e772f
 	github.com/mholt/caddy-l4 v0.0.0-20250124234235-87e3e5e2c7f9
