@@ -6,8 +6,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 16
     commit-message:
-      prefix: "chore(deps)"
-    versioning-strategy: increase
+      prefix: "chore(deps - go): "
     labels:
       - "deps"
       - "go"
@@ -29,7 +28,7 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "chore(deps): docker"
+      prefix: "chore(deps - docker): "
     labels:
       - "deps"
       - "docker"
