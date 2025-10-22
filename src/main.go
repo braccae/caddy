@@ -39,7 +39,6 @@ import (
 	_ "github.com/abiosoft/caddy-json-schema"
 	// Dynamic DNS
 	_ "github.com/mholt/caddy-dynamicdns"
-	_ "github.com/mholt/caddy-dynamicdns"
 	// Crowdsec
 	_ "github.com/hslatman/caddy-crowdsec-bouncer/http"
 	_ "github.com/hslatman/caddy-crowdsec-bouncer/layer4"

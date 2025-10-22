@@ -121,39 +121,77 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'src/go.mod'
+          cache-dependency-path: src/go.sum
 
       - name: Prepare release version & changelog
         id: prepare_release
         run: |
           set -e
+          go install ./tools/schema-generator
+          schema-generator > caddy.schema.json.new
+
+          set +e
+          # An exit code of 1 just means the files are different.
+          diff caddy.schema.json caddy.schema.json.new > /dev/null
+          SCHEMA_CHANGED=$?
+          set -e
+
           git fetch --tags --prune --unshallow || true
           # suppress error if no tags
-          LAST_TAG=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=0 2>/dev/null || echo "")
-          if [ -z "$LAST_TAG" ]; then
-            LAST_VERSION="0.0.0"
-          else
-            LAST_VERSION=${LAST_TAG#v}
-          fi
-          CADDY_MAJOR=$(grep -Eo 'github.com/caddyserver/caddy/v[0-9]+' src/go.mod | head -n1 | grep -Eo 'v[0-9]+' | tr -d 'v')
-          IFS=. read -r LAST_MAJ LAST_MIN LAST_PATCH <<< "$LAST_VERSION"
-          if [ "$CADDY_MAJOR" != "$LAST_MAJ" ]; then
-            NEW_MAJ=$CADDY_MAJOR
-            NEW_MIN=0
-            NEW_PATCH=0
-          else
-            NEW_MAJ=$LAST_MAJ
-            git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
-            HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
-            INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep '// indirect' || true)
-            if [ -n "$HARD_CHANGED" ] || [ -n "$INDIRECT_CHANGED" ]; then
-              NEW_MIN=$((LAST_MIN + 1))
-              NEW_PATCH=0
+          LAST_TAG=$(git describe --tags --match "v*" --abbrev=0 2>/dev/null || echo "")
+
+          CADDY_VERSION=$(grep -E 'github.com/caddyserver/caddy/v2' src/go.mod | sed -E 's/.*v(.*)/\1/')
+          OUR_VERSION="0.0.0"
+
+          if [ -n "$LAST_TAG" ]; then
+            # If the Caddy version has changed, we start our version over.
+            if ! echo "$LAST_TAG" | grep -q "$CADDY_VERSION"; then
+              OUR_VERSION="0.0.0"
             else
-              NEW_MIN=$LAST_MIN
-              NEW_PATCH=$((LAST_PATCH + 1))
+              OUR_VERSION=$(echo "$LAST_TAG" | sed -E "s/v$CADDY_VERSION-(.*)/\1/")
             fi
           fi
-          NEW_TAG=v${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}
+
+          IFS=. read -r OUR_MAJ OUR_MIN OUR_PATCH <<< "$OUR_VERSION"
+
+          if [ "$SCHEMA_CHANGED" -ne 0 ]; then
+            # For now, any schema change is a major version bump.
+            # In the future, we can do more advanced diffing to check for breaking changes.
+            NEW_MAJ=$((OUR_MAJ + 1))
+            NEW_MIN=0
+            NEW_PATCH=0
+            mv caddy.schema.json.new caddy.schema.json
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git add caddy.schema.json
+            git commit -m "build: update caddy schema"
+            git push
+          else
+            rm caddy.schema.json.new
+            NEW_MAJ=$OUR_MAJ
+            git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
+            # Direct dependencies
+            HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | { grep -v '// indirect' || true; } )
+            # Indirect dependencies
+            INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | { grep '// indirect' || true; } )
+
+            if [ -n "$HARD_CHANGED" ]; then
+              NEW_MIN=$((OUR_MIN + 1))
+              NEW_PATCH=0
+            elif [ -n "$INDIRECT_CHANGED" ]; then
+              NEW_MIN=$OUR_MIN
+              NEW_PATCH=$((OUR_PATCH + 1))
+            else
+              NEW_MIN=$OUR_MIN
+              NEW_PATCH=$((OUR_PATCH + 1)) # Or just don't release? For now, we'll bump patch.
+            fi
+          fi
+
+          NEW_TAG="v${CADDY_VERSION}-${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}"
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "Computed next version: $NEW_TAG"
 
@@ -166,7 +204,7 @@ jobs:
 
           # Gather dependency changelogs
           git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
-          HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
+          HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | { grep -v '// indirect' || true; } )
           if [ -n "$HARD_CHANGED" ]; then
             MODULES=$(echo "$HARD_CHANGED" | sed -E 's/^[+-][[:space:]]+([[:alnum:]./+-]+) v.*/\1/' | sort -u)
           else
@@ -183,9 +221,9 @@ jobs:
             # get version inside src
             vers=$(cd src && go list -m -f '{{if eq .Path "'"$mod"'"}}{{.Version}}{{end}}' all)
             # Try fetch changelog by tag, else latest
-            notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$repo/releases/tags/$vers" | jq -r '.body // empty') || true
+            notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$repo/releases/tags/$vers" | jq -r '.body // empty') || true
             if [ -z "$notes" ]; then
-              notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.body // empty') || true
+              notes=$(curl -sSL -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.body // empty') || true
             fi
             if [ -z "$notes" ]; then
               notes="No changelog available"
