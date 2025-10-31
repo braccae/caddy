@@ -1,13 +1,10 @@
-name: Build and release Caddy
+name: Release Caddy
 
 on:
-  # push:
-  #   branches: [ main ]
-  #   paths:
-  #     - "src/**"
-  # pull_request:
-  #   paths:
-  #     - "src/**"
+  push:
+    branches: [ main ]
+    paths:
+      - "src/**"
   workflow_dispatch:
 
 permissions:
@@ -36,8 +33,6 @@ jobs:
             goarch: riscv64
           - goos: darwin
             goarch: riscv64
-          # - goos: linux
-          #   goarch: riscv64
     steps:
       - uses: actions/checkout@v5
       - name: Setup Go
@@ -115,18 +110,21 @@ jobs:
         with:
           name: caddy-${{ matrix.goos }}-amd64v1
           path: build/caddy-${{ matrix.goos }}-amd64v1
+
   release:
     name: Release
     needs: [build-arm64, build-other]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Prepare release version & changelog
         id: prepare_release
         run: |
           set -e
-          git fetch --tags --prune --unshallow || true
+          git fetch --tags --prune || true
           # suppress error if no tags
           LAST_TAG=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then

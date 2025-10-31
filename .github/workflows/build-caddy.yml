@@ -1,0 +1,111 @@
+name: Build Caddy
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-arm64:
+    name: Build Caddy (arm64)
+    runs-on: ubuntu-24.04-arm
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: arm
+            goarm: 6
+          - goos: linux
+            goarch: arm
+            goarm: 7
+        goos: [linux, windows, darwin]
+        goarch: [arm64, riscv64]
+        exclude:
+          - goos: windows
+            goarch: riscv64
+          - goos: darwin
+            goarch: riscv64
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'src/go.mod'
+          cache-dependency-path: src/go.sum
+      - run: go version
+      - name: Build
+        working-directory: src
+        run: |
+          mkdir -p ../build
+          OUTNAME=../build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}
+          if [ "${{ matrix.goarch }}" = "arm" ]; then
+            OUTNAME=../build/caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
+            GOARM=${{ matrix.goarm }}
+          elif [ "${{ matrix.goarch }}" = "arm64" ]; then
+            OUTNAME=../build/caddy-${{ matrix.goos }}-arm64v8
+          elif [ "${{ matrix.goarch }}" = "amd64" ]; then
+            OUTNAME=../build/caddy-${{ matrix.goos }}-amd64v1
+          elif [ "${{ matrix.goarch }}" = "riscv64" ]; then
+            OUTNAME=../build/caddy-${{ matrix.goos }}-riscv64
+          fi
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -o "$OUTNAME" .
+      - name: Upload artifact (arm)
+        if: ${{ matrix.goarch == 'arm' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
+          path: build/caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
+      - name: Upload artifact (arm64)
+        if: ${{ matrix.goarch == 'arm64' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: caddy-${{ matrix.goos }}-arm64v8
+          path: build/caddy-${{ matrix.goos }}-arm64v8
+      - name: Upload artifact (riscv64)
+        if: ${{ matrix.goarch == 'riscv64' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: caddy-${{ matrix.goos }}-riscv64
+          path: build/caddy-${{ matrix.goos }}-riscv64
+      - name: Upload artifact (other non-arm)
+        if: ${{ matrix.goarch != 'arm' && matrix.goarch != 'arm64' && matrix.goarch != 'riscv64' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: caddy-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}
+
+  build-other:
+    name: Build Caddy (x86_64)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        goos: [linux, windows]
+        goarch: [amd64]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: 'src/go.mod'
+          cache-dependency-path: src/go.sum
+      - run: go version
+      - name: Build
+        working-directory: src
+        run: |
+          mkdir -p ../build
+          OUTNAME=../build/caddy-${{ matrix.goos }}-amd64v1
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -o "$OUTNAME" .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: caddy-${{ matrix.goos }}-amd64v1
+          path: build/caddy-${{ matrix.goos }}-amd64v1
