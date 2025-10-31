@@ -5,7 +5,7 @@ go 1.25.1
 require (
 	github.com/WeidiDeng/caddy-cloudflare-ip v0.0.0-20231130002422-f53b62aa13cb
 	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af
-	github.com/caddy-dns/cloudflare v0.2.1
+	github.com/caddy-dns/cloudflare v0.2.2
 	github.com/caddyserver/caddy/v2 v2.10.2
 	github.com/gerolf-vent/caddy-vault-storage v1.2.1
 	github.com/greenpau/caddy-security v1.1.31
@@ -144,7 +144,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
-	github.com/libdns/cloudflare v0.2.1 // indirect
+	github.com/libdns/cloudflare v0.2.2 // indirect
 	github.com/libdns/libdns v1.1.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
