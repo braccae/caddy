@@ -125,15 +125,20 @@ jobs:
         run: |
           set -e
           git fetch --tags --prune || true
-          # suppress error if no tags
-          LAST_TAG=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=0 2>/dev/null || echo "")
+          
+          # Get all version tags sorted by version number
+          ALL_TAGS=$(git tag -l "v[0-9]*.[0-9]*.[0-9]*" | sort -V)
+          LAST_TAG=$(echo "$ALL_TAGS" | tail -n1)
+          
           if [ -z "$LAST_TAG" ]; then
             LAST_VERSION="0.0.0"
           else
             LAST_VERSION=${LAST_TAG#v}
           fi
+          
           CADDY_MAJOR=$(grep -Eo 'github.com/caddyserver/caddy/v[0-9]+' src/go.mod | head -n1 | grep -Eo 'v[0-9]+' | tr -d 'v')
           IFS=. read -r LAST_MAJ LAST_MIN LAST_PATCH <<< "$LAST_VERSION"
+          
           if [ "$CADDY_MAJOR" != "$LAST_MAJ" ]; then
             NEW_MAJ=$CADDY_MAJOR
             NEW_MIN=0
@@ -143,14 +148,23 @@ jobs:
             git diff "$LAST_TAG"...HEAD -- src/go.mod > /tmp/gomod.diff || true
             HARD_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep -v '// indirect' || true)
             INDIRECT_CHANGED=$(grep -E '^[+-][[:space:]]+[[:alnum:]./+-]+ v' /tmp/gomod.diff | grep '// indirect' || true)
+            
             if [ -n "$HARD_CHANGED" ] || [ -n "$INDIRECT_CHANGED" ]; then
+              # Start with next minor version
               NEW_MIN=$((LAST_MIN + 1))
               NEW_PATCH=0
             else
+              # Start with next patch version
               NEW_MIN=$LAST_MIN
               NEW_PATCH=$((LAST_PATCH + 1))
             fi
           fi
+          
+          # Ensure we don't reuse an existing version
+          while git tag -l "v${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}" | grep -q .; do
+            # If this version exists, increment patch level
+            NEW_PATCH=$((NEW_PATCH + 1))
+          done
           NEW_TAG=v${NEW_MAJ}.${NEW_MIN}.${NEW_PATCH}
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "Computed next version: $NEW_TAG"
