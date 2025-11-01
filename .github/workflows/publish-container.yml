@@ -4,7 +4,7 @@ on:
   release:
     types: [ published, created]
   workflow_run:
-    workflows: ["Build and release caddy"]
+    workflows: ["Release Caddy"]
     types: [completed]
   push:
     branches: [ main ]
