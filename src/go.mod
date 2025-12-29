@@ -14,7 +14,7 @@ require (
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
 	github.com/mholt/caddy-l4 v0.0.0-20231016112149-a362a1fbf652
 	github.com/mohammed90/caddy-storage-loader v1.0.0
-	github.com/techknowlogick/certmagic-s3 v1.4.0
+	github.com/techknowlogick/certmagic-s3 v1.4.1
 )
 
 require (
