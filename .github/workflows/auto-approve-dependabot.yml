@@ -1,0 +1,38 @@
+name: Auto-approve Dependabot PRs
+
+on:
+  workflow_run:
+    workflows: ["Build Caddy"]
+    types:
+      - completed
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-approve:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-approve Dependabot PRs
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prs = context.payload.workflow_run.pull_requests || [];
+            for (const pr of prs) {
+              const author = pr.user && pr.user.login;
+              if (author === 'dependabot[bot]' || author === 'dependabot') {
+                await github.rest.pulls.createReview({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  event: 'APPROVE',
+                  body: 'Auto-approved because automated checks passed.'
+                });
+                console.log(`Approved PR #${pr.number} by ${author}`);
+              } else {
+                console.log(`Skipping PR #${pr.number} by ${author}`);
+              }
+            }
