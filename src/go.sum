@@ -1012,8 +1012,8 @@ github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69
 github.com/tailscale/tscert v0.0.0-20240608151842-d3f834017e53 h1:uxMgm0C+EjytfAqyfBG55ZONKQ7mvd7x4YYCWsf8QHQ=
 github.com/tailscale/tscert v0.0.0-20240608151842-d3f834017e53/go.mod h1:kNGUQ3VESx3VZwRwA9MSCUegIl6+saPL8Noq82ozCaU=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
-github.com/techknowlogick/certmagic-s3 v1.4.0 h1:l/GRPaNrPO1qgh1AW7oAu1Ag6z9HkqpDmsvOookg0yA=
-github.com/techknowlogick/certmagic-s3 v1.4.0/go.mod h1:WujfUvDbNtVXR8H/KSIngJZjKlVGXUz3hUcpsrYf1Gc=
+github.com/techknowlogick/certmagic-s3 v1.4.1 h1:f3km043nqof7vZDEof6rYSlOvAp3guhFQjLhr6iz/aw=
+github.com/techknowlogick/certmagic-s3 v1.4.1/go.mod h1:WujfUvDbNtVXR8H/KSIngJZjKlVGXUz3hUcpsrYf1Gc=
 github.com/thales-e-security/pool v0.0.2/go.mod h1:qtpMm2+thHtqhLzTwgDBj/OuNnMpupY8mv0Phz0gjhU=
 github.com/things-go/go-socks5 v0.0.4 h1:jMQjIc+qhD4z9cITOMnBiwo9dDmpGuXmBlkRFrl/qD0=
 github.com/things-go/go-socks5 v0.0.4/go.mod h1:sh4K6WHrmHZpjxLTCHyYtXYH8OUuD+yZun41NomR1IQ=
