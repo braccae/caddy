@@ -58,25 +58,25 @@ jobs:
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -o "$OUTNAME" .
       - name: Upload artifact (arm)
         if: ${{ matrix.goarch == 'arm' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
           path: build/caddy-${{ matrix.goos }}-arm32v${{ matrix.goarm }}
       - name: Upload artifact (arm64)
         if: ${{ matrix.goarch == 'arm64' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: caddy-${{ matrix.goos }}-arm64v8
           path: build/caddy-${{ matrix.goos }}-arm64v8
       - name: Upload artifact (riscv64)
         if: ${{ matrix.goarch == 'riscv64' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: caddy-${{ matrix.goos }}-riscv64
           path: build/caddy-${{ matrix.goos }}-riscv64
       - name: Upload artifact (other non-arm)
         if: ${{ matrix.goarch != 'arm' && matrix.goarch != 'arm64' && matrix.goarch != 'riscv64' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: caddy-${{ matrix.goos }}-${{ matrix.goarch }}
           path: build/caddy-${{ matrix.goos }}-${{ matrix.goarch }}
@@ -105,7 +105,7 @@ jobs:
           OUTNAME=../build/caddy-${{ matrix.goos }}-amd64v1
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 go build -o "$OUTNAME" .
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: caddy-${{ matrix.goos }}-amd64v1
           path: build/caddy-${{ matrix.goos }}-amd64v1
