@@ -1,6 +1,6 @@
 module caddy
 
-go 1.25.1
+go 1.25.7
 
 require (
 	github.com/WeidiDeng/caddy-cloudflare-ip v0.0.0-20231130002422-f53b62aa13cb
@@ -9,7 +9,7 @@ require (
 	github.com/caddyserver/caddy/v2 v2.10.2
 	github.com/gerolf-vent/caddy-vault-storage v1.2.1
 	github.com/greenpau/caddy-security v1.1.32
-	github.com/hslatman/caddy-crowdsec-bouncer v0.9.2
+	github.com/hslatman/caddy-crowdsec-bouncer v0.10.0
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
 	github.com/mholt/caddy-l4 v0.0.0-20231016112149-a362a1fbf652
@@ -22,7 +22,7 @@ require (
 	cloud.google.com/go/auth v0.17.0 // indirect
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
-	dario.cat/mergo v1.0.1 // indirect
+	dario.cat/mergo v1.0.2 // indirect
 	filippo.io/edwards25519 v1.1.1 // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
 	github.com/Azure/go-ntlmssp v0.1.0 // indirect
@@ -56,7 +56,6 @@ require (
 	github.com/aws/smithy-go v1.23.1 // indirect
 	github.com/beevik/etree v1.6.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bits-and-blooms/bitset v1.14.3 // indirect
 	github.com/blackfireio/osinfo v1.0.5 // indirect
 	github.com/caddyserver/certmagic v0.24.0 // indirect
 	github.com/caddyserver/zerossl v0.1.3 // indirect
@@ -88,7 +87,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
-	github.com/gaissmai/bart v0.13.0 // indirect
+	github.com/gaissmai/bart v0.26.1 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.8-0.20250403174932-29230038a667 // indirect
 	github.com/go-chi/chi/v5 v5.2.3 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
@@ -132,7 +131,7 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.7 // indirect
 	github.com/hashicorp/hcl v1.0.1-vault-7 // indirect
 	github.com/hashicorp/vault/api v1.22.0 // indirect
-	github.com/hslatman/ipstore v0.3.0 // indirect
+	github.com/hslatman/ipstore v0.4.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
