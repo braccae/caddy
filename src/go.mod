@@ -5,7 +5,7 @@ go 1.25.7
 require (
 	github.com/WeidiDeng/caddy-cloudflare-ip v0.0.0-20231130002422-f53b62aa13cb
 	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af
-	github.com/caddy-dns/cloudflare v0.2.2
+	github.com/caddy-dns/cloudflare v0.2.3
 	github.com/caddyserver/caddy/v2 v2.10.2
 	github.com/gerolf-vent/caddy-vault-storage v1.2.1
 	github.com/greenpau/caddy-security v1.1.32
