@@ -544,10 +544,10 @@ github.com/googleapis/gax-go/v2 v2.17.0/go.mod h1:mzaqghpQp4JDh3HvADwrat+6M3MOID
 github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/gostaticanalysis/analysisutil v0.0.0-20190318220348-4088753ea4d3/go.mod h1:eEOZF4jCKGi+aprrirO9e7WKB3beBRtWgqGunKl6pKE=
-github.com/greenpau/caddy-security v1.1.38 h1:pvjeEE6bjaF7zb577zxTIiHp/ynQ1tJ1t/hgKGb9iys=
-github.com/greenpau/caddy-security v1.1.38/go.mod h1:zfkXN2mC/O09C7Y5+PP/CDFzhmanbEi6tx20ic/732Y=
-github.com/greenpau/go-authcrunch v1.1.15 h1:N28d9/Z5lJCl8mdd1AaAUiXW6R1numx7jFcrIcxZpGU=
-github.com/greenpau/go-authcrunch v1.1.15/go.mod h1:jNbg/paV4+/OePXGkatzpJ89o1P8Wj5D0ez5LrWI/m4=
+github.com/greenpau/caddy-security v1.1.44 h1:BHVPFyOsdUCGyIcCDjYlMFX7x7zetGiQd4KLvrn69QM=
+github.com/greenpau/caddy-security v1.1.44/go.mod h1:vGcD1+kEiA91egqGZnK2w9/8NNgo9Cb3f+VV6iVU+pw=
+github.com/greenpau/go-authcrunch v1.1.20 h1:BNV/piCMzu0dO/xyaLtghdSnMj61DPS5MMkc8oK4P04=
+github.com/greenpau/go-authcrunch v1.1.20/go.mod h1:jNbg/paV4+/OePXGkatzpJ89o1P8Wj5D0ez5LrWI/m4=
 github.com/greenpau/versioned v1.0.30 h1:QILUlfTSyJnhT8Gw9lLonZmuP5ahNQoJizw7mo30IQ4=
 github.com/greenpau/versioned v1.0.30/go.mod h1:rtFCvaWWNbMH4CJnje/xicgmrM63j++rUh5juSu0k/A=
 github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7/go.mod h1:FecbI9+v66THATjSRHfNgh1IVFe/9kFxbXtjV0ctIMA=
