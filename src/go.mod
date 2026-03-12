@@ -12,7 +12,7 @@ require (
 	github.com/hslatman/caddy-crowdsec-bouncer v0.10.0
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
-	github.com/mholt/caddy-l4 v0.0.0-20231016112149-a362a1fbf652
+	github.com/mholt/caddy-l4 v0.1.0
 	github.com/mohammed90/caddy-storage-loader v1.0.0
 	github.com/techknowlogick/certmagic-s3 v1.4.1
 )
@@ -148,7 +148,6 @@ require (
 	github.com/libdns/libdns v1.1.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/manifoldco/promptui v0.9.0 // indirect
-	github.com/mastercactapus/proxyprotocol v0.0.4 // indirect
 	github.com/mattermost/xml-roundtrip-validator v0.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -196,7 +195,7 @@ require (
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tailscale/go-winio v0.0.0-20231025203758-c4f33415bf55 // indirect
 	github.com/tailscale/tscert v0.0.0-20251216020129-aea342f6d747 // indirect
-	github.com/things-go/go-socks5 v0.0.4 // indirect
+	github.com/things-go/go-socks5 v0.1.0 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
