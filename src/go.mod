@@ -8,7 +8,7 @@ require (
 	github.com/caddy-dns/cloudflare v0.2.3
 	github.com/caddyserver/caddy/v2 v2.11.2
 	github.com/gerolf-vent/caddy-vault-storage v1.2.1
-	github.com/greenpau/caddy-security v1.1.45
+	github.com/greenpau/caddy-security v1.1.51
 	github.com/hslatman/caddy-crowdsec-bouncer v0.10.0
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
@@ -120,7 +120,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.11 // indirect
 	github.com/googleapis/gax-go/v2 v2.17.0 // indirect
-	github.com/greenpau/go-authcrunch v1.1.21 // indirect
+	github.com/greenpau/go-authcrunch v1.1.27 // indirect
 	github.com/greenpau/versioned v1.0.30 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.7 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -175,7 +175,7 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/rs/xid v1.6.0 // indirect
-	github.com/russellhaering/goxmldsig v1.5.0 // indirect
+	github.com/russellhaering/goxmldsig v1.6.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
