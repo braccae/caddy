@@ -4,7 +4,7 @@ ARG TARGETVARIANT
 ARG CADDY_VERSION
 
 # Base image selection
-FROM alpine:3.23.3
+FROM alpine:3.23.4
 
 # Redefine ARGs after FROM (required)
 ARG TARGETARCH
