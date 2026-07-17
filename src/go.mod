@@ -12,7 +12,7 @@ require (
 	github.com/hslatman/caddy-crowdsec-bouncer v0.13.1
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
-	github.com/mholt/caddy-l4 v0.1.1
+	github.com/mholt/caddy-l4 v0.1.2
 	github.com/mohammed90/caddy-storage-loader v1.0.0
 	github.com/techknowlogick/certmagic-s3 v1.4.1
 )
@@ -164,7 +164,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
-	github.com/pires/go-proxyproto v0.12.0 // indirect
+	github.com/pires/go-proxyproto v0.13.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/power-devops/perfstat v0.0.0-20240221224432-82ca36839d55 // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
