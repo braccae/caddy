@@ -7,7 +7,7 @@ require (
 	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af
 	github.com/caddy-dns/cloudflare v0.2.4
 	github.com/caddyserver/caddy/v2 v2.11.4
-	github.com/gerolf-vent/caddy-vault-storage v1.2.2
+	github.com/gerolf-vent/caddy-vault-storage v1.2.3
 	github.com/greenpau/caddy-security v1.1.64
 	github.com/hslatman/caddy-crowdsec-bouncer v0.13.1
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
