@@ -9,7 +9,7 @@ require (
 	github.com/caddyserver/caddy/v2 v2.11.4
 	github.com/gerolf-vent/caddy-vault-storage v1.2.3
 	github.com/greenpau/caddy-security v1.1.64
-	github.com/hslatman/caddy-crowdsec-bouncer v0.13.1
+	github.com/hslatman/caddy-crowdsec-bouncer v0.14.1
 	github.com/mentimeter/caddy-storage-cf-kv v0.0.0-20250219160011-939ac14649ca
 	github.com/mholt/caddy-dynamicdns v0.0.0-20250430031602-b846b9e8fb83
 	github.com/mholt/caddy-l4 v0.1.2
@@ -162,7 +162,6 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.6.1 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
-	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
 	github.com/pires/go-proxyproto v0.13.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
