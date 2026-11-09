@@ -6,7 +6,7 @@ require (
 	github.com/WeidiDeng/caddy-cloudflare-ip v0.0.0-20231130002422-f53b62aa13cb
 	github.com/abiosoft/caddy-json-schema v0.0.0-20220621031927-c4d6e132f3af
 	github.com/caddy-dns/cloudflare v0.2.4
-	github.com/caddyserver/caddy/v2 v2.11.7
+	github.com/caddyserver/caddy/v2 v2.11.9
 	github.com/gerolf-vent/caddy-vault-storage v1.2.3
 	github.com/greenpau/caddy-security v1.4.1
 	github.com/hslatman/caddy-crowdsec-bouncer v0.14.1
@@ -92,9 +92,9 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.4 // indirect
 	github.com/gaissmai/bart v0.28.0 // indirect
 	github.com/go-asn1-ber/asn1-ber v1.5.8 // indirect
-	github.com/go-chi/chi/v5 v5.3.2 // indirect
+	github.com/go-chi/chi/v5 v5.4.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.5 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.5 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.6 // indirect
 	github.com/go-ldap/ldap/v3 v3.4.14 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -261,9 +261,9 @@ require (
 	go.uber.org/zap/exp v0.3.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.57.0 // indirect
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20260929172509-b39ff6d641ec // indirect
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20261030153154-30a33513ff6d // indirect
 	golang.org/x/exp v0.0.0-20260908205506-85c1c2202aba // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/oauth2 v0.37.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
