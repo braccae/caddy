@@ -330,8 +330,8 @@ github.com/fxamacker/cbor/v2 v2.9.4 h1:xwjVlxEMR3S605oUlgBjKLTTeGFciYPGYCtF/35LK
 github.com/fxamacker/cbor/v2 v2.9.4/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
 github.com/gaissmai/bart v0.28.0 h1:89yZLo8NmyqD0RYgJ3QO9HhqqGGw+oWhf90cZm69Lko=
 github.com/gaissmai/bart v0.28.0/go.mod h1:GREWQfTLRWz/c5FTOsIw+KkscuFkIV5t8Rp7Nd1Td5c=
-github.com/gerolf-vent/caddy-vault-storage v1.2.3 h1:RGwQULdBq+hGzMRU2F03WA4xZ2AURvRXuASFx6MfZyY=
-github.com/gerolf-vent/caddy-vault-storage v1.2.3/go.mod h1:asB7hL1IrWtWJQ5TkE8GOaWoIr9vId+r3UVh1s+FL4o=
+github.com/gerolf-vent/caddy-vault-storage v1.2.4 h1:vPiXRb46hY15VdJSh2aIwv9nEgr9u7r3wc04vy5PbiY=
+github.com/gerolf-vent/caddy-vault-storage v1.2.4/go.mod h1:RjH4kMm1J7l2qvylguadoFxKZ0fzaYDJoiwYBHQi/+4=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gliderlabs/ssh v0.1.1/go.mod h1:U7qILu1NlMHj9FlMhZLlkCdDnU1DBEAqr0aevW3Awn0=
 github.com/go-asn1-ber/asn1-ber v1.5.8 h1:H9AZkK22UOmfX8J84ubyaZxKJZ3FMHVwn8swoMML7iQ=
